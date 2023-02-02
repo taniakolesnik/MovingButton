@@ -1,6 +1,9 @@
 package com.example.movingbutton;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,10 +13,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
+import java.io.Closeable;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
+    MyViewModel viewModel;
     RelativeLayout myLayout;
     Button button;
     RelativeLayout.LayoutParams params;
@@ -22,8 +27,10 @@ public class MainActivity extends AppCompatActivity {
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
+            viewModel = new ViewModelProvider(this).get(MyViewModel.class);
             button = new Button(this);
-            button.setText(R.string.click);
+
+            button.setText(String.valueOf(viewModel.getCount()));
             button.setBackgroundColor(Color.YELLOW);
 
             params = new RelativeLayout.LayoutParams(500, 500);
@@ -39,10 +46,17 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     moveButton(view);
+                    updateCount();
                 }
             });
 
         }
+
+    private void updateCount() {
+            int count = viewModel.getCount() + 1;
+            viewModel.setCount(count);
+            button.setText(String.valueOf(viewModel.getCount()));
+    }
 
     private void moveButton(View view) {
 
